@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from pydantic import BaseModel
 
 from app.core.users import fastapi_users, auth_backend, current_user
 from app.models import User
@@ -32,10 +33,12 @@ router.include_router(
     response_model=list[UserRead],
     dependencies=[Depends(current_user)],
     tags=['users'],
+    description='Получение списка пользователей с фильтрацией по '
+    'номеру телефона, почте и юзернейму',
 )
 async def filter_users(
     phone_number: str = None, email: str = None, username: str = None
-):
+) -> list[BaseModel]:
     filters = {}
     if phone_number:
         filters['phone_number'] = {'$regex': f'^{phone_number}'}
