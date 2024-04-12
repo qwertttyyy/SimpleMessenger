@@ -14,7 +14,7 @@
 
 
 ## Используемый стек
-- Python
+- Python 3.12
 - FastAPI
 - MongoDB
 - Motor
