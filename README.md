@@ -44,7 +44,7 @@
 
 3. Запуск сервера FastAPI:
     ```bash
-    uvicorn main:app --reload
+    uvicorn app.main:app --reload
     ```
 
 5. #### Приложение будет доступно по адресу http://127.0.0.1:8000
