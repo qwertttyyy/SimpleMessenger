@@ -20,8 +20,8 @@ router = APIRouter()
     response_model=list[Message],
     dependencies=[Depends(current_user)],
     tags=['messages'],
-    description='Получение списка сообщений пользователя '
-    'отправленных пользователю с receiver_id',
+    description='Получение списка сообщений пользователя, '
+    'отправленных другому пользователю, по его receiver_id',
 )
 async def get_messages(
     receiver_id: str,

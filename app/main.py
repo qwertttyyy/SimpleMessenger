@@ -1,8 +1,10 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from beanie import init_beanie
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.staticfiles import StaticFiles
 
 from app.api.routers import main_router
 from app.core.config import settings
@@ -22,6 +24,10 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title=settings.app_title, lifespan=lifespan)
+
+app.mount(
+    "/media", StaticFiles(directory=str(settings.media_folder)), name="media"
+)
 
 origins = [
     "http://localhost:8000",

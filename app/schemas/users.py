@@ -2,7 +2,7 @@ from typing import Optional
 
 from beanie import PydanticObjectId
 from fastapi_users import schemas
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr, AnyUrl
 
 from app.core.constants import (
     PHONE_NUMBER_REGULAR_PATTERN,
@@ -27,17 +27,14 @@ class BaseUser(BaseModel):
 
 
 class UserRead(BaseUser, schemas.BaseUser[PydanticObjectId]):
-    pass
+    avatar_url: Optional[AnyUrl] = Field(None)
 
 
 class UserCreate(BaseUser, schemas.BaseUserCreate):
     class Config:
         json_schema_extra = {
             'example': {
-                "email": "user@example.com",
                 "phone_number": "+79999999999",
-                "username": "username",
-                "about_me": "about me info",
                 "password": "password",
             },
         }
