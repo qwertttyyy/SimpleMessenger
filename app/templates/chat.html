@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Simple Chat</h1>
+
+<label for="phone_number">Phone number:</label><br>
+<input type="text" id="phone_number" name="phone_number"
+       value="+79999999999"><br>
+<label for="password">Password:</label><br>
+<input type="password" id="password" name="password" value="password"><br>
+<button onclick="login()">Login</button>
+<br>
+
+<label for="receiver_id">Receiver ID:</label><br>
+<input type="text" id="receiver_id" name="receiver_id"><br>
+<button onclick="connect()">Connect</button>
+<br>
+
+<label for="message">Message:</label><br>
+<input type="text" id="message" name="message"><br>
+<button onclick="sendMessage()">Send</button>
+<br>
+
+<ul id="messages"></ul>
+
+<script>
+    var socket = null;
+    var token = null;
+
+    async function login() {
+        const phone_number = encodeURIComponent(document.getElementById('phone_number').value);
+        const password = document.getElementById('password').value;
+
+        const response = await fetch('http://127.0.0.1:8000/auth/jwt/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `grant_type=password&username=${phone_number}&password=${password}`
+        });
+
+        const data = await response.json();
+        token = data.access_token;
+    }
+
+    function connect() {
+        const receiver_id = document.getElementById('receiver_id').value;
+        socket = new WebSocket(`ws://127.0.0.1:8000/ws/${receiver_id}/${token}`);
+
+        socket.onopen = function (event) {
+            console.log('WebSocket is open now.');
+        };
+
+        socket.onmessage = function (event) {
+            var messages = document.getElementById('messages');
+            var message = document.createElement('li');
+            message.textContent = receiver_id + ': ' + event.data;
+            messages.appendChild(message);
+        };
+    }
+
+    function sendMessage(event) {
+        const message = document.getElementById('message').value;
+        socket.send(message);
+
+        var messages = document.getElementById('messages');
+        var sentMessage = document.createElement('li');
+        sentMessage.textContent = 'You: ' + message;
+        messages.appendChild(sentMessage);
+
+    }
+</script>
+</body>
+</html>
